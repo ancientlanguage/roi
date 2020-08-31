@@ -50,24 +50,78 @@ export function isValidSumValue(sumValue : SumValue): boolean {
 
 export function sumValueToSizedValue(sumValue : SumValue): SizedValue {
   return {
-    size: sumSizeToSize(sumValue).size,
+    ...sumSizeToSize(sumValue),
     value: sumValue.sizes.slice(0, sumValue.sumIndex).reduce((r,v) => r + v.size, 0)
       + sumValue.sumValue
   };
 }
 
+export type TryResultStatus = "success" | "failure";
+
+export interface TryResult<A> {
+  status: TryResultStatus;
+  message?: string;
+  result?: A;
+}
+
+export function makeFailure<A>(message?: string): TryResult<A> {
+  return {
+    status: "failure",
+    message
+  }
+}
+
+export function makeSuccess<A>(result: A): TryResult<A> {
+  return {
+    status: "success",
+    result
+  }
+}
+
 export function trySizedValueToSumValue(
   sizedValue: SizedValue,
   sumSize: SumSize
-): SumValue | null {
+): TryResult<SumValue> {
   const expectedSize = sumSizeToSize(sumSize);
-  if (isSizeEqual(sizedValue, expectedSize)) {
-    return {
-      sizes: sumSize.sizes,
-      value: sizedValue.value
-    };
+  if (!isSizeEqual(sizedValue, expectedSize)) {
+    return makeFailure(`size mismatch`
+      + `, expected ${expectedSize.size}`
+      + ` but was ${sizedValue.size}`
+    );
   }
-  return null;
+
+  let runningTotalSize: number = 0;
+  const sumIndex = sumSize.sizes.findIndex(
+    (size) => {
+      if (sizedValue.value < size.size + runningTotalSize) {
+        return true;
+      } else {
+        runningTotalSize += size.size;
+        return false;
+      }
+    }
+  );
+  if (sumIndex < 0) {
+    return makeFailure(`no suitable size found`
+      + `, runningTotalSize: ${runningTotalSize}`
+      + `, sumIndex: ${sumIndex}`
+    );
+  }
+  const localSize = sumSize.sizes[sumIndex];
+  if (sizedValue.value >= runningTotalSize + localSize.size) {
+    return makeFailure(`sumIndex is positive but value is greater than expected size`
+      + `, runningTotalSize: ${runningTotalSize}`
+      + `, sizedValue.value: ${sizedValue.value}`
+      + `, sumIndex: ${sumIndex}`
+    );
+  }
+  const sumValue = sizedValue.value - runningTotalSize;
+  return makeSuccess({
+      ...sumSize,
+      sumIndex,
+      sumValue
+    }
+  );
 }
 
 export interface ProductSize {
@@ -75,12 +129,12 @@ export interface ProductSize {
 }
 
 export function productSizeToSize(productSize : ProductSize): Size {
-  const totalSize = productSize.sizes
+  const size = productSize.sizes
       .reduce(
         (total, current) => total * current.size,
         1
       );
-  return { size: totalSize };
+  return { size };
 }
 
 export interface ProductValue {
@@ -93,12 +147,11 @@ export function trySizedValueToProductValue(
 ): ProductValue | null {
   const expectedSize = productSizeToSize(productSize);
   if (isSizeEqual(sizedValue, expectedSize)) {
-    const buildValues: SizedValue[] = [];
+    const values: SizedValue[] = [];
     productSize.sizes.reduce(
-      ((previousValue: number,
-        current: Size) => {
-        buildValues.push({
-          size: current.size,
+      ((previousValue: number, current: Size) => {
+        values.push({
+          ...current,
           value: previousValue % current.size
         })
         return Math.floor(previousValue / current.size);
@@ -106,7 +159,7 @@ export function trySizedValueToProductValue(
       sizedValue.value
     );
     return {
-      values: buildValues
+      values
     };
   }
   return null;
