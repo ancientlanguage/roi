@@ -147,43 +147,48 @@ test('productSizeToSize', () => {
 
 test('trySizedValueToProductValue', () => {
   expect(Core.trySizedValueToProductValue(
+    {size:7, value:0},
+    {sizes:makeSizes([1,2,3])}
+  )).toHaveProperty("status", "failure");
+
+  expect(Core.trySizedValueToProductValue(
     {size:4, value:0},
     {sizes:makeSizes([2,2])}
-  )).toStrictEqual(
+  )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:0}
       , {size:2,value:0}
       ]
     }
-  );
+  ));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:1},
     {sizes:makeSizes([2,2])}
-  )).toStrictEqual(
+  )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:1}
       , {size:2,value:0}
       ]
     }
-  );
+  ));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:2},
     {sizes:makeSizes([2,2])}
-  )).toStrictEqual(
+  )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:0}
       , {size:2,value:1}
       ]
     }
-  );
+  ));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:3},
     {sizes:makeSizes([2,2])}
-  )).toStrictEqual(
+  )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:1}
       , {size:2,value:1}
       ]
     }
-  );
+  ));
 });

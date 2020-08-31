@@ -58,16 +58,24 @@ export function sumValueToSizedValue(sumValue : SumValue): SizedValue {
 
 export type TryResultStatus = "success" | "failure";
 
+export interface TryError {
+  message: string,
+  data: object
+}
+
 export interface TryResult<A> {
   status: TryResultStatus;
-  message?: string;
+  error?: TryError;
   result?: A;
 }
 
-export function makeFailure<A>(message?: string): TryResult<A> {
+export function makeFailure<A>(message: string, data: object): TryResult<A> {
   return {
     status: "failure",
-    message
+    error: {
+      message,
+      data
+    }
   }
 }
 
@@ -84,9 +92,7 @@ export function trySizedValueToSumValue(
 ): TryResult<SumValue> {
   const expectedSize = sumSizeToSize(sumSize);
   if (!isSizeEqual(sizedValue, expectedSize)) {
-    return makeFailure(`size mismatch`
-      + `, expected ${expectedSize.size}`
-      + ` but was ${sizedValue.size}`
+    return makeFailure("size mismatch", {expectedSize, sizedValue}
     );
   }
 
@@ -102,17 +108,12 @@ export function trySizedValueToSumValue(
     }
   );
   if (sumIndex < 0) {
-    return makeFailure(`no suitable size found`
-      + `, runningTotalSize: ${runningTotalSize}`
-      + `, sumIndex: ${sumIndex}`
-    );
+    return makeFailure("no suitable size found", {runningTotalSize, sumIndex});
   }
   const localSize = sumSize.sizes[sumIndex];
   if (sizedValue.value >= runningTotalSize + localSize.size) {
-    return makeFailure(`sumIndex is positive but value is greater than expected size`
-      + `, runningTotalSize: ${runningTotalSize}`
-      + `, sizedValue.value: ${sizedValue.value}`
-      + `, sumIndex: ${sumIndex}`
+    return makeFailure("sumIndex is positive but value is greater than expected size",
+      {runningTotalSize, sizedValue, sumIndex}
     );
   }
   const sumValue = sizedValue.value - runningTotalSize;
@@ -144,23 +145,25 @@ export interface ProductValue {
 export function trySizedValueToProductValue(
   sizedValue: SizedValue,
   productSize: ProductSize
-): ProductValue | null {
+): TryResult<ProductValue> {
   const expectedSize = productSizeToSize(productSize);
-  if (isSizeEqual(sizedValue, expectedSize)) {
-    const values: SizedValue[] = [];
-    productSize.sizes.reduce(
-      ((previousValue: number, current: Size) => {
-        values.push({
-          ...current,
-          value: previousValue % current.size
-        })
-        return Math.floor(previousValue / current.size);
-      }),
-      sizedValue.value
+  if (!isSizeEqual(sizedValue, expectedSize)) {
+    return makeFailure("sizes do not match",
+      {sizedValue, expectedSize}
     );
-    return {
-      values
-    };
   }
-  return null;
+  const values: SizedValue[] = [];
+  productSize.sizes.reduce(
+    ((previousValue: number, current: Size) => {
+      values.push({
+        ...current,
+        value: previousValue % current.size
+      })
+      return Math.floor(previousValue / current.size);
+    }),
+    sizedValue.value
+  );
+  return makeSuccess({
+    values
+  });
 }
