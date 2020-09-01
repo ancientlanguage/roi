@@ -192,3 +192,30 @@ test('trySizedValueToProductValue', () => {
     }
   ));
 });
+
+test('isValidArrayValue', () => {
+  expect(Core.isValidArrayValue(
+    {elementSize:4, elementValues:[4]})).toBe(false);
+  expect(Core.isValidArrayValue(
+    {elementSize:4, elementValues:[0,1,2,3]})).toBe(true);
+});
+
+test('arraySizeToSize', () => {
+  expect(Core.arraySizeToSize({elementCount:8, elementSize: 2}))
+    .toStrictEqual({size: 256});
+});
+
+test('arraySizeToProductSize', () => {
+  expect(Core.arraySizeToProductSize({elementCount:3, elementSize: 2}))
+    .toStrictEqual({sizes: makeSizes([2,2,2])});
+});
+
+test('arrayValueToProductValue', () => {
+  expect(Core.arrayValueToProductValue({elementSize: 2, elementValues: [0,1,1,1]}))
+    .toStrictEqual({values:[
+      {size:2,value:0},
+      {size:2,value:1},
+      {size:2,value:1},
+      {size:2,value:1},
+    ]});
+});

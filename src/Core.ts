@@ -7,14 +7,11 @@ export function isSizeEqual(left: Size, right: Size): boolean {
   return left.size == right.size;
 }
 
-// A natural number, zero or more.
-export interface UnsizedValue {
-  value: number;
-}
-
 // A value for a given size.
 // 0 >= value < size
-export interface SizedValue extends Size, UnsizedValue {}
+export interface SizedValue extends Size {
+  value: number;
+}
 
 // Check that the value is between zero and less than size.
 export function isValidSizedValue(value : SizedValue): boolean {
@@ -25,6 +22,11 @@ export interface SumSize {
   sizes: Size[];
 }
 
+export interface SumValue extends SumSize {
+  sumIndex: number,
+  sumValue: number
+}
+
 export function sumSizeToSize(sumSize : SumSize): Size {
   const totalSize = sumSize.sizes
       .reduce(
@@ -32,11 +34,6 @@ export function sumSizeToSize(sumSize : SumSize): Size {
         0
       );
   return { size: totalSize };
-}
-
-export interface SumValue extends SumSize {
-  sumIndex: number,
-  sumValue: number
 }
 
 export function isValidSumValue(sumValue : SumValue): boolean {
@@ -129,6 +126,10 @@ export interface ProductSize {
   sizes: Size[];
 }
 
+export interface ProductValue {
+  values: SizedValue[];
+}
+
 export function productSizeToSize(productSize : ProductSize): Size {
   const size = productSize.sizes
       .reduce(
@@ -136,10 +137,6 @@ export function productSizeToSize(productSize : ProductSize): Size {
         1
       );
   return { size };
-}
-
-export interface ProductValue {
-  values: SizedValue[];
 }
 
 export function trySizedValueToProductValue(
@@ -166,4 +163,45 @@ export function trySizedValueToProductValue(
   return makeSuccess({
     values
   });
+}
+
+export interface ArraySize {
+  elementCount: number;
+  elementSize: number;
+}
+
+export interface ArrayValue {
+  elementSize: number;
+  elementValues: number[];
+}
+
+export function isValidArrayValue({elementSize, elementValues} : ArrayValue): boolean {
+  return elementValues.reduce((combined:boolean, current) =>
+    combined && current >= 0 && current < elementSize, true);
+}
+
+export function arrayValueToArraySize({elementSize, elementValues} : ArrayValue): ArraySize {
+  return {
+    elementSize,
+    elementCount: elementValues.length
+  }
+}
+
+export function arraySizeToSize({elementCount, elementSize} : ArraySize): Size {
+  const size = elementSize ** elementCount;
+  return { size };
+}
+
+export function arraySizeToProductSize({elementCount, elementSize} : ArraySize): ProductSize {
+  let sizes = Array(elementCount);
+  sizes.fill({ size: elementSize });
+  return { sizes };
+}
+
+export function arrayValueToProductValue({elementSize, elementValues} : ArrayValue) : ProductValue {
+  const values = elementValues.map((value) => ({
+    size: elementSize,
+    value
+  }));
+  return { values };
 }
