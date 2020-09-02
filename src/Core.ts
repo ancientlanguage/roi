@@ -61,6 +61,27 @@ export function sumValueToSizedValue(sumValue : SumValue): SizedValue {
   };
 }
 
+export function enumerateSumValues(sumSize: SumSize): SumValue[] {
+  const results: SumValue[] = [];
+  sumSize.sizes.reduce(
+    ({previousSizeTotal, currentIndex}, size) => {
+      const localValues = enumerateSizedValues(size);
+      localValues.forEach((value, valueIndex) => {
+        const totalIndex = previousSizeTotal + valueIndex;
+        results.push({
+          ...sumSize,
+          sumIndex: currentIndex,
+          sumValue: value.value
+        });
+      });
+      return {
+        previousSizeTotal: previousSizeTotal + size.size,
+        currentIndex: currentIndex + 1
+      };
+    }, {previousSizeTotal: 0, currentIndex: 0});
+  return results;
+}
+
 export type TryResultStatus = "success" | "failure";
 
 export interface TryError {
@@ -97,8 +118,8 @@ export function trySizedValueToSumValue(
 ): TryResult<SumValue> {
   const expectedSize = sumSizeToSize(sumSize);
   if (!isSizeEqual(sizedValue, expectedSize)) {
-    return makeFailure("size mismatch", {expectedSize, sizedValue}
-    );
+    return makeFailure("size mismatch",
+      {expectedSize, sizedValue});
   }
 
   let runningTotalSize: number = 0;
@@ -113,7 +134,8 @@ export function trySizedValueToSumValue(
     }
   );
   if (sumIndex < 0) {
-    return makeFailure("no suitable size found", {runningTotalSize, sumIndex});
+    return makeFailure("no suitable size found",
+      {runningTotalSize, sumIndex});
   }
   const localSize = sumSize.sizes[sumIndex];
   if (sizedValue.value >= runningTotalSize + localSize.size) {
