@@ -18,6 +18,14 @@ export function isValidSizedValue(value : SizedValue): boolean {
   return value.value >= 0 && value.value < value.size;
 }
 
+export function enumerateSizedValues(size: Size):SizedValue[] {
+  const results = Array(size.size);
+  for (let value = 0; value < size.size; value++) {
+    results[value] = {...size, value};
+  }
+  return results;
+}
+
 export interface SumSize {
   sizes: Size[];
 }
