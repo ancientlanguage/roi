@@ -11,18 +11,20 @@ test('isValidSizeValue', () => {
   expect(Core.isValidSizedValue({size:4, value:0})).toBe(true);
 });
 
-test('enumerateSizedValues', () => {
+describe('enumerateSizedValues', () => {
   for(let size = 0; size < 256; size++) {
-    const values = Core.enumerateSizedValues({size});
-    expect(values.length).toBe(size);
-    expect(values.reduce((prev, curr) =>
-      prev && Core.isValidSizedValue(curr),
-      true
-      )).toBe(true);
-
-    const valueSet = new Set();
-    values.forEach((value) => valueSet.add(value.value));
-    expect(valueSet.size).toBe(size);
+    test(`enumerateSizedValues({size:${size}})`, () => {
+      const values = Core.enumerateSizedValues({size});
+      expect(values.length).toBe(size);
+      expect(values.reduce((prev, curr) =>
+        prev && Core.isValidSizedValue(curr),
+        true
+        )).toBe(true);
+  
+      const valueSet = new Set();
+      values.forEach((value) => valueSet.add(value.value));
+      expect(valueSet.size).toBe(size);
+    });
   }
 })
 
