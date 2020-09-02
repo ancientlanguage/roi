@@ -85,10 +85,15 @@ test('sumValueToSizedValue', () => {
 });
 
 test('enumerateSumValues', () => {
-  const sumSize = {sizes:makeSizes([1,2,3])};
+  const sumSize = {sizes:makeSizes([1,2,3,4])};
   const sumValues = Core.enumerateSumValues(sumSize);
   const size = Core.sumSizeToSize(sumSize);
   expect(sumValues.length).toBe(size.size);
+
+  const values = sumValues.map(Core.sumValueToSizedValue);
+  const valueSet = new Set();
+  values.forEach((value) => valueSet.add(value.value));
+  expect(valueSet.size).toBe(size.size);
 });
 
 test('trySizedValueToSumValue', () => {
