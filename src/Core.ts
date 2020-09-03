@@ -60,10 +60,13 @@ export function isValidSizedSumValue(value : SizedSumValue): boolean {
 }
 
 export function sizedSumValueToSizedValue(sumValue : SizedSumValue): SizedValue {
+  const previousSizeSum =
+    sumValue.sizes
+      .slice(0, sumValue.sumIndex)
+      .reduce((result, value) => result + value, 0);
   return {
     ...sumSizeToSize(sumValue),
-    value: sumValue.sizes.slice(0, sumValue.sumIndex).reduce((r,v) => r + v, 0)
-      + sumValue.sumValue
+    value: previousSizeSum + sumValue.sumValue
   };
 }
 
