@@ -1,10 +1,6 @@
 import React from 'react';
 import * as Core from './Core';
 
-function makeSizes(numberSizes:number[]): Core.Size[] {
-  return numberSizes.map((x) => ({size:x}));
-}
-
 test('isValidSizeValue', () => {
   expect(Core.isValidSizedValue({size:4, value:4})).toBe(false);
   expect(Core.isValidSizedValue({size:4, value:3})).toBe(true);
@@ -171,19 +167,19 @@ test('trySizedValueToSumValue', () => {
 
 test('productSizeToSize', () => {
   expect(Core.productSizeToSize({sizes:[]})).toStrictEqual({size:1});
-  expect(Core.productSizeToSize({sizes:makeSizes([1,2,3,4])}))
+  expect(Core.productSizeToSize({sizes:[1,2,3,4]}))
     .toStrictEqual({size:24});
 });
 
 test('trySizedValueToProductValue', () => {
   expect(Core.trySizedValueToProductValue(
     {size:7, value:0},
-    {sizes:makeSizes([1,2,3])}
+    {sizes:[1,2,3]}
   )).toHaveProperty("status", "failure");
 
   expect(Core.trySizedValueToProductValue(
     {size:4, value:0},
-    {sizes:makeSizes([2,2])}
+    {sizes:[2,2]}
   )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:0}
@@ -193,7 +189,7 @@ test('trySizedValueToProductValue', () => {
   ));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:1},
-    {sizes:makeSizes([2,2])}
+    {sizes:[2,2]}
   )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:1}
@@ -203,7 +199,7 @@ test('trySizedValueToProductValue', () => {
   ));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:2},
-    {sizes:makeSizes([2,2])}
+    {sizes:[2,2]}
   )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:0}
@@ -213,7 +209,7 @@ test('trySizedValueToProductValue', () => {
   ));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:3},
-    {sizes:makeSizes([2,2])}
+    {sizes:[2,2]}
   )).toStrictEqual(Core.makeSuccess(
     { values:
       [ {size:2,value:1}
@@ -237,7 +233,7 @@ test('arraySizeToSize', () => {
 
 test('arraySizeToProductSize', () => {
   expect(Core.arraySizeToProductSize({elementCount:3, elementSize: 2}))
-    .toStrictEqual({sizes: makeSizes([2,2,2])});
+    .toStrictEqual({sizes: [2,2,2]});
 });
 
 test('arrayValueToProductValue', () => {

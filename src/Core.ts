@@ -160,7 +160,7 @@ export function trySizedValueToSumValue(
 }
 
 export interface ProductSize {
-  sizes: Size[];
+  sizes: number[];
 }
 
 export interface ProductValue {
@@ -170,7 +170,7 @@ export interface ProductValue {
 export function productSizeToSize(productSize : ProductSize): Size {
   const size = productSize.sizes
       .reduce(
-        (total, current) => total * current.size,
+        (total, current) => total * current,
         1
       );
   return { size };
@@ -188,12 +188,12 @@ export function trySizedValueToProductValue(
   }
   const values: SizedValue[] = [];
   productSize.sizes.reduce(
-    ((previousValue: number, current: Size) => {
+    ((previousValue: number, current: number) => {
       values.push({
-        ...current,
-        value: previousValue % current.size
+        size: current,
+        value: previousValue % current
       })
-      return Math.floor(previousValue / current.size);
+      return Math.floor(previousValue / current);
     }),
     sizedValue.value
   );
@@ -231,7 +231,7 @@ export function arraySizeToSize({elementCount, elementSize} : ArraySize): Size {
 
 export function arraySizeToProductSize({elementCount, elementSize} : ArraySize): ProductSize {
   let sizes = Array(elementCount);
-  sizes.fill({ size: elementSize });
+  sizes.fill(elementSize);
   return { sizes };
 }
 
