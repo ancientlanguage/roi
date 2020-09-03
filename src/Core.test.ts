@@ -180,49 +180,25 @@ test('trySizedValueToProductValue', () => {
   expect(Core.trySizedValueToProductValue(
     {size:4, value:0},
     {sizes:[2,2]}
-  )).toStrictEqual(Core.makeSuccess(
-    { values:
-      [ {size:2,value:0}
-      , {size:2,value:0}
-      ]
-    }
-  ));
+  )).toStrictEqual(Core.makeSuccess({values:[0,0]}));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:1},
     {sizes:[2,2]}
-  )).toStrictEqual(Core.makeSuccess(
-    { values:
-      [ {size:2,value:1}
-      , {size:2,value:0}
-      ]
-    }
-  ));
+  )).toStrictEqual(Core.makeSuccess({values:[1,0]}));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:2},
     {sizes:[2,2]}
-  )).toStrictEqual(Core.makeSuccess(
-    { values:
-      [ {size:2,value:0}
-      , {size:2,value:1}
-      ]
-    }
-  ));
+  )).toStrictEqual(Core.makeSuccess({values:[0,1]}));
   expect(Core.trySizedValueToProductValue(
     {size:4, value:3},
     {sizes:[2,2]}
-  )).toStrictEqual(Core.makeSuccess(
-    { values:
-      [ {size:2,value:1}
-      , {size:2,value:1}
-      ]
-    }
-  ));
+  )).toStrictEqual(Core.makeSuccess({values:[1,1]}));
 });
 
-test('isValidArrayValue', () => {
-  expect(Core.isValidArrayValue(
+test('isValidSizedArrayValue', () => {
+  expect(Core.isValidSizedArrayValue(
     {elementSize:4, elementValues:[4]})).toBe(false);
-  expect(Core.isValidArrayValue(
+  expect(Core.isValidSizedArrayValue(
     {elementSize:4, elementValues:[0,1,2,3]})).toBe(true);
 });
 
@@ -236,12 +212,11 @@ test('arraySizeToProductSize', () => {
     .toStrictEqual({sizes: [2,2,2]});
 });
 
-test('arrayValueToProductValue', () => {
-  expect(Core.arrayValueToProductValue({elementSize: 2, elementValues: [0,1,1,1]}))
-    .toStrictEqual({values:[
-      {size:2,value:0},
-      {size:2,value:1},
-      {size:2,value:1},
-      {size:2,value:1},
-    ]});
+test('sizedArrayValueToSizedProductValue', () => {
+  expect(Core.sizedArrayValueToSizedProductValue(
+      {elementSize: 2, elementValues: [0,1,1,1]})
+    ).toStrictEqual({
+      sizes: [2,2,2,2],
+      values: [0,1,1,1]
+    });
 });

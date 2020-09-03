@@ -164,8 +164,10 @@ export interface ProductSize {
 }
 
 export interface ProductValue {
-  values: SizedValue[];
+  values: number[];
 }
+
+export interface SizedProductValue extends ProductSize, ProductValue {}
 
 export function productSizeToSize(productSize : ProductSize): Size {
   const size = productSize.sizes
@@ -186,13 +188,10 @@ export function trySizedValueToProductValue(
       {sizedValue, expectedSize}
     );
   }
-  const values: SizedValue[] = [];
+  const values: number[] = [];
   productSize.sizes.reduce(
     ((previousValue: number, current: number) => {
-      values.push({
-        size: current,
-        value: previousValue % current
-      })
+      values.push(previousValue % current)
       return Math.floor(previousValue / current);
     }),
     sizedValue.value
@@ -208,16 +207,20 @@ export interface ArraySize {
 }
 
 export interface ArrayValue {
-  elementSize: number;
   elementValues: number[];
 }
 
-export function isValidArrayValue({elementSize, elementValues} : ArrayValue): boolean {
+// we only need the size, since elementCount is redundant with elementValues.length
+export interface SizedArrayValue extends ArrayValue {
+  elementSize: number
+}
+
+export function isValidSizedArrayValue({elementSize, elementValues} : SizedArrayValue): boolean {
   return elementValues.reduce((combined:boolean, current) =>
     combined && current >= 0 && current < elementSize, true);
 }
 
-export function arrayValueToArraySize({elementSize, elementValues} : ArrayValue): ArraySize {
+export function sizedArrayValueToArraySize({elementSize, elementValues} : SizedArrayValue): ArraySize {
   return {
     elementSize,
     elementCount: elementValues.length
@@ -235,10 +238,10 @@ export function arraySizeToProductSize({elementCount, elementSize} : ArraySize):
   return { sizes };
 }
 
-export function arrayValueToProductValue({elementSize, elementValues} : ArrayValue) : ProductValue {
-  const values = elementValues.map((value) => ({
-    size: elementSize,
-    value
-  }));
-  return { values };
+export function sizedArrayValueToSizedProductValue({elementSize, elementValues} : SizedArrayValue) : SizedProductValue {
+  const sizes = elementValues.map((value) => elementSize);
+  return {
+    sizes,
+    values: elementValues
+  };
 }
