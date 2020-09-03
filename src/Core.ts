@@ -7,6 +7,10 @@ export function isSizeEqual(left: Size, right: Size): boolean {
   return left.size == right.size;
 }
 
+export interface Value {
+  value: number;
+}
+
 // A value for a given size.
 // 0 >= value < size
 export interface SizedValue extends Size {
@@ -30,10 +34,12 @@ export interface SumSize {
   sizes: Size[];
 }
 
-export interface SumValue extends SumSize {
+export interface SumValue {
   sumIndex: number,
   sumValue: number
 }
+
+export interface SizedSumValue extends SumSize, SumValue {}
 
 export function sumSizeToSize(sumSize : SumSize): Size {
   const totalSize = sumSize.sizes
@@ -44,16 +50,16 @@ export function sumSizeToSize(sumSize : SumSize): Size {
   return { size: totalSize };
 }
 
-export function isValidSumValue(sumValue : SumValue): boolean {
-  return sumValue.sumIndex >= 0 &&
-    sumValue.sumIndex < sumValue.sizes.length &&
+export function isValidSizedSumValue(value : SizedSumValue): boolean {
+  return value.sumIndex >= 0 &&
+    value.sumIndex < value.sizes.length &&
     isValidSizedValue({
-      size: sumValue.sizes[sumValue.sumIndex].size,
-      value: sumValue.sumValue
+      size: value.sizes[value.sumIndex].size,
+      value: value.sumValue
     });
 }
 
-export function sumValueToSizedValue(sumValue : SumValue): SizedValue {
+export function sizedSumValueToSizedValue(sumValue : SizedSumValue): SizedValue {
   return {
     ...sumSizeToSize(sumValue),
     value: sumValue.sizes.slice(0, sumValue.sumIndex).reduce((r,v) => r + v.size, 0)
@@ -69,7 +75,6 @@ export function enumerateSumValues(sumSize: SumSize): SumValue[] {
       localValues.forEach((value, valueIndex) => {
         const totalIndex = previousSizeTotal + valueIndex;
         results.push({
-          ...sumSize,
           sumIndex: currentIndex,
           sumValue: value.value
         });
@@ -145,7 +150,6 @@ export function trySizedValueToSumValue(
   }
   const sumValue = sizedValue.value - runningTotalSize;
   return makeSuccess({
-      ...sumSize,
       sumIndex,
       sumValue
     }

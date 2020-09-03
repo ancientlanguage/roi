@@ -34,51 +34,51 @@ test('sumSizeToSize', () => {
     .toStrictEqual({size:10});
 });
 
-test('isValidSumValue', () => {
-  expect(Core.isValidSumValue(
+test('isValidSizedSumValue', () => {
+  expect(Core.isValidSizedSumValue(
     {sizes:makeSizes([2]), sumIndex:1, sumValue: 0}))
     .toBe(false);
-  expect(Core.isValidSumValue(
+  expect(Core.isValidSizedSumValue(
     {sizes:makeSizes([2]), sumIndex:0, sumValue: 0}))
     .toBe(true);
-  expect(Core.isValidSumValue(
+  expect(Core.isValidSizedSumValue(
     {sizes:makeSizes([2,3]), sumIndex:1, sumValue: 0}))
     .toBe(true);
-  expect(Core.isValidSumValue(
+  expect(Core.isValidSizedSumValue(
     {sizes:makeSizes([2,3]), sumIndex:1, sumValue: 4}))
     .toBe(false);
 });
 
-test('sumValueToSizedValue', () => {
-  expect(Core.sumValueToSizedValue(
+test('sizedSumValueToSizedValue', () => {
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([2]), sumIndex:0, sumValue: 0})).toStrictEqual(
       {size:2, value:0}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([2]), sumIndex:0, sumValue: 1})).toStrictEqual(
       {size:2, value:1}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([2,1]), sumIndex:1, sumValue: 0})).toStrictEqual(
       {size:3, value:2}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([2,2]), sumIndex:1, sumValue: 1})).toStrictEqual(
       {size:4, value:3}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([2,3]), sumIndex:0, sumValue: 1})).toStrictEqual(
       {size:5, value:1}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([2,3]), sumIndex:1, sumValue: 0})).toStrictEqual(
       {size:5, value:2}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([1,1]), sumIndex:0, sumValue: 0})).toStrictEqual(
       {size:2, value:0}
     );
-  expect(Core.sumValueToSizedValue(
+  expect(Core.sizedSumValueToSizedValue(
     {sizes:makeSizes([1,1]), sumIndex:1, sumValue: 0})).toStrictEqual(
       {size:2, value:1}
     );
@@ -90,7 +90,8 @@ test('enumerateSumValues', () => {
   const size = Core.sumSizeToSize(sumSize);
   expect(sumValues.length).toBe(size.size);
 
-  const values = sumValues.map(Core.sumValueToSizedValue);
+  const values = sumValues.map((sumValue) =>
+    Core.sizedSumValueToSizedValue({...sumSize,...sumValue}));
   const valueSet = new Set();
   values.forEach((value) => valueSet.add(value.value));
   expect(valueSet.size).toBe(size.size);
@@ -106,7 +107,7 @@ test('trySizedValueToSumValue', () => {
     {size:2, value:0},
     {sizes:makeSizes([1,1])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([1,1]),
+    Core.makeSuccess({
       sumIndex: 0,
       sumValue: 0
     })
@@ -115,7 +116,7 @@ test('trySizedValueToSumValue', () => {
     {size:2, value:1},
     {sizes:makeSizes([1,1])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([1,1]),
+    Core.makeSuccess({
       sumIndex: 1,
       sumValue: 0
     })
@@ -125,7 +126,7 @@ test('trySizedValueToSumValue', () => {
     {size:5, value:0},
     {sizes:makeSizes([2,3])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([2,3]),
+    Core.makeSuccess({
       sumIndex: 0,
       sumValue: 0
     })
@@ -134,7 +135,7 @@ test('trySizedValueToSumValue', () => {
     {size:5, value:1},
     {sizes:makeSizes([2,3])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([2,3]),
+    Core.makeSuccess({
       sumIndex: 0,
       sumValue: 1
     })
@@ -143,7 +144,7 @@ test('trySizedValueToSumValue', () => {
     {size:5, value:2},
     {sizes:makeSizes([2,3])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([2,3]),
+    Core.makeSuccess({
       sumIndex: 1,
       sumValue: 0
     })
@@ -152,7 +153,7 @@ test('trySizedValueToSumValue', () => {
     {size:5, value:3},
     {sizes:makeSizes([2,3])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([2,3]),
+    Core.makeSuccess({
       sumIndex: 1,
       sumValue: 1
     })
@@ -161,7 +162,7 @@ test('trySizedValueToSumValue', () => {
     {size:5, value:4},
     {sizes:makeSizes([2,3])}
   )).toStrictEqual(
-    Core.makeSuccess({ sizes:makeSizes([2,3]),
+    Core.makeSuccess({
       sumIndex: 1,
       sumValue: 2
     })
