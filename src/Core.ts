@@ -31,7 +31,7 @@ export function enumerateSizedValues(size: Size):SizedValue[] {
 }
 
 export interface SumSize {
-  sizes: Size[];
+  sizes: number[];
 }
 
 export interface SumValue {
@@ -42,19 +42,19 @@ export interface SumValue {
 export interface SizedSumValue extends SumSize, SumValue {}
 
 export function sumSizeToSize(sumSize : SumSize): Size {
-  const totalSize = sumSize.sizes
+  const size = sumSize.sizes
       .reduce(
-        (total, current) => total + current.size,
+        (total, current) => total + current,
         0
       );
-  return { size: totalSize };
+  return { size };
 }
 
 export function isValidSizedSumValue(value : SizedSumValue): boolean {
   return value.sumIndex >= 0 &&
     value.sumIndex < value.sizes.length &&
     isValidSizedValue({
-      size: value.sizes[value.sumIndex].size,
+      size: value.sizes[value.sumIndex],
       value: value.sumValue
     });
 }
@@ -62,7 +62,7 @@ export function isValidSizedSumValue(value : SizedSumValue): boolean {
 export function sizedSumValueToSizedValue(sumValue : SizedSumValue): SizedValue {
   return {
     ...sumSizeToSize(sumValue),
-    value: sumValue.sizes.slice(0, sumValue.sumIndex).reduce((r,v) => r + v.size, 0)
+    value: sumValue.sizes.slice(0, sumValue.sumIndex).reduce((r,v) => r + v, 0)
       + sumValue.sumValue
   };
 }
@@ -71,7 +71,7 @@ export function enumerateSumValues(sumSize: SumSize): SumValue[] {
   const results: SumValue[] = [];
   sumSize.sizes.reduce(
     ({previousSizeTotal, currentIndex}, size) => {
-      const localValues = enumerateSizedValues(size);
+      const localValues = enumerateSizedValues({size});
       localValues.forEach((value, valueIndex) => {
         const totalIndex = previousSizeTotal + valueIndex;
         results.push({
@@ -80,7 +80,7 @@ export function enumerateSumValues(sumSize: SumSize): SumValue[] {
         });
       });
       return {
-        previousSizeTotal: previousSizeTotal + size.size,
+        previousSizeTotal: previousSizeTotal + size,
         currentIndex: currentIndex + 1
       };
     }, {previousSizeTotal: 0, currentIndex: 0});
@@ -130,10 +130,10 @@ export function trySizedValueToSumValue(
   let runningTotalSize: number = 0;
   const sumIndex = sumSize.sizes.findIndex(
     (size) => {
-      if (sizedValue.value < size.size + runningTotalSize) {
+      if (sizedValue.value < size + runningTotalSize) {
         return true;
       } else {
-        runningTotalSize += size.size;
+        runningTotalSize += size;
         return false;
       }
     }
@@ -143,7 +143,7 @@ export function trySizedValueToSumValue(
       {runningTotalSize, sumIndex});
   }
   const localSize = sumSize.sizes[sumIndex];
-  if (sizedValue.value >= runningTotalSize + localSize.size) {
+  if (sizedValue.value >= runningTotalSize + localSize) {
     return makeFailure("sumIndex is positive but value is greater than expected size",
       {runningTotalSize, sizedValue, sumIndex}
     );
