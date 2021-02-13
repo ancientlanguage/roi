@@ -54,10 +54,25 @@ test('sizedSumValueToSizedValue', () => {
     {sizes:[2], sumIndex:0, sumValue: 1})).toStrictEqual(
       {size:2, value:1}
     );
+
+  expect(Core.sizedSumValueToSizedValue(
+    {sizes:[1,1,1], sumIndex:0, sumValue: 0})).toStrictEqual(
+      {size:3, value:0}
+    );
+
+  expect(Core.sizedSumValueToSizedValue(
+    {sizes:[2,1], sumIndex:0, sumValue: 0})).toStrictEqual(
+      {size:3, value:0}
+    );
+  expect(Core.sizedSumValueToSizedValue(
+    {sizes:[2,1], sumIndex:0, sumValue: 1})).toStrictEqual(
+      {size:3, value:1}
+    );
   expect(Core.sizedSumValueToSizedValue(
     {sizes:[2,1], sumIndex:1, sumValue: 0})).toStrictEqual(
       {size:3, value:2}
     );
+
   expect(Core.sizedSumValueToSizedValue(
     {sizes:[2,2], sumIndex:1, sumValue: 1})).toStrictEqual(
       {size:4, value:3}

@@ -1,0 +1,97 @@
+256 [filesize]
+
+ASCII. 7-bit
+
+128 [filesize]
+
+
+N = 2^8
+M = 2^8
+
+9
+9
+18
+
+N + M = 2^9
+
+
+O(n) = 10 * C
+O(n) = 1,000,000 * C
+
+O(n^2) = 10^2 * C
+O(n^2) = 1,000,000^2 * C
+
+
+Two-way mapping
+
+N       |  Letter, LetterCase, Accent
+------------
+0 a     |  4 alpha, lowercase, none
+1 A     |  1 alpha, uppercase, none
+2 A'    |  2 alpha, uppercase, acute
+3 Frth  |  3
+4 Ffth  |  0
+
+
+  N, M  =  N * M
+0 N0, M0
+1 N1, M0
+2 N2, M0
+3 N0, M1
+4 N1, M1
+5 N2, M1
+
+
+ My Type -- only occuring values
+0 alpha, lowercase, none
+1 alpha, uppercase, none
+2 alpha, uppercase, acute
+
+
+Letter, LetterCase, Accent | My Type
+-------------------------------------
+0 | 0
+1 | 1
+2 | 2
+3 | Not expected to occur
+4 | Not expected to occur
+
+Letter (22)
+-----
+0 alpha
+1 beta
+2 gamma
+...
+
+LetterCase (2)
+-----
+0 lowercase
+1 uppercase
+
+Accent (4)
+-----
+0 none
+1 acute
+2 grave
+3 circumflex
+
+
+N       |  M
+------------
+0 Fst   |  4
+1 Snd   |  1
+2 Thr   |  2
+3 Frth  |  3
+4 Ffth  |  0
+ ?      |  5
+ ?      |  6
+
+
+
+N       |  M
+------------
+0 Fst   |  4
+1 Snd   |  1
+2 Thr   |  2
+3 Frth  |   ?
+4 Ffth  |   ?

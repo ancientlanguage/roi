@@ -13,9 +13,7 @@ export interface Value {
 
 // A value for a given size.
 // 0 >= value < size
-export interface SizedValue extends Size {
-  value: number;
-}
+export interface SizedValue extends Size, Value {}
 
 // Check that the value is between zero and less than size.
 export function isValidSizedValue(value : SizedValue): boolean {

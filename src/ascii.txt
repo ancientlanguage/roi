@@ -1,0 +1,128 @@
+Null
+Start of Heading
+Start of Text
+End of Text
+End of Transmission
+Enquiry
+Acknowledgement
+Bell
+Backspace
+Horizontal Tab
+Line Feed
+Vertical Tab
+Form Feed
+Carriage Return
+Shift Out
+Shift In
+Data Link Escape
+Device Control 1 (often XON)
+Device Control 2
+Device Control 3 (often XOFF)
+Device Control 4
+Negative Acknowledgement
+Synchronous Idle
+End of Transmission Block
+Cancel
+End of Medium
+Substitute
+Escape
+File Separator
+Group Separator
+Record Separator
+Unit Separator
+Space
+!
+"
+#
+$
+%
+&
+'
+(
+)
+*
++
+,
+-
+.
+/
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+:
+;
+<
+=
+>
+?
+@
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+[
+\
+]
+^
+_
+`
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+{
+|
+}
+~
+Delete

@@ -1,0 +1,196 @@
+Size & Value
+
+
+letter {size: 5}
+
+A {value:0}
+B {value:1}
+C {value:2}
+D {value:3}
+E {value:4}
+
+
+Vowel = A | E
+Consonant = B | C | D
+
+Vowel {size: 2}
+A {value:0}
+E {value:1}
+
+Consontant {size:3}
+B {value:0}
+C {value:1}
+D {value:2}
+
+letter-cat = Vowel | Consonant
+
+letter-cat {sizes:[2,3]}  ~ {size:5}
+
+A {sumIndex:0,sumValue:0} ~ {value:0}
+E {sumIndex:0,sumValue:1} ~ {value:1}
+
+B {sumIndex:1,sumValue:0} ~ {value:2}
+C {sumIndex:1,sumValue:1} ~ {value:3}
+D {sumIndex:1,sumValue:2} ~ {value:4}
+
+
+letter-pair = (A-E, A-E)
+
+letter-pair {sizes:[5,5]} ~ {size: 25} // 5 ^ 2
+
+A A {values:[0,0]} ~ {value:0}
+A B {values:[0,1]} ~ {value:1}
+A C {values:[0,2]} ~ {value:2}
+A D {values:[0,3]} ~ {value:3}
+A E {values:[0,4]} ~ {value:4}
+B A {values:[1,0]} ~ {value:5}
+B B {values:[1,1]} ~ {value:6}
+B C {values:[1,2]} ~ {value:7}
+B D {values:[1,3]} ~ {value:8}
+B E {values:[1,4]} ~ {value:9}
+C A {values:[2,0]} ~ {value:10}
+C B {values:[2,1]} ~ {value:11}
+C C {values:[2,2]} ~ {value:12}
+C D {values:[2,3]} ~ {value:13}
+C E {values:[2,4]} ~ {value:14}
+D A {values:[3,0]} ~ {value:15}
+D B {values:[3,1]} ~ {value:16}
+D C {values:[3,2]} ~ {value:17}
+D D {values:[3,3]} ~ {value:18}
+D E {values:[3,4]} ~ {value:19}
+E A {values:[4,0]} ~ {value:20}
+E B {values:[4,1]} ~ {value:21}
+E C {values:[4,2]} ~ {value:22}
+E D {values:[4,3]} ~ {value:23}
+E E {values:[4,4]} ~ {value:24}
+
+
+(b1, b2, b3, bit4-8), next-bytes : 0, 1, 2, 3
+
+bytes[] (with multi-byte encoding)
+  ^
+  |
+  v
+code-point[]
+
+in school
+
+word[]
+
+(prep-phrase|other-words)[]
+
+    b1, b2, b3, nxt
+0   0,  0,  0   -   UTF-8 1 byte
+1   0,  0,  1   -
+2   0,  1,  0   -
+3   0,  1,  1   -
+4   1,  0,  0   0   UTF-8 2 byte
+5   1,  0,  0   1   
+6   1,  1,  0   00  UTF-8 3 byte
+7   1,  1,  0   01
+8   1,  1,  0   10
+9   1,  1,  0   11
+10  1,  1,  1   000 UTF-8 4 byte
+11  1,  1,  1   001
+12  1,  1,  1   010
+13  1,  1,  1   011
+14  1,  1,  1   100
+15  1,  1,  1   101
+16  1,  1,  1   110
+17  1,  1,  1   111
+
+
+byte[] '\n' 2
+
+(byte[])[]
+
+non-endline-text[]
+0 -> 0
+1 -> 1
+2 -> *
+3 -> 2
+4 -> 3
+...
+
+
+
+
+
+0-9 A-F
+16
+0 0
+1 1
+...
+9 9
+A 10
+B 11
+C 12
+D 13
+E 14
+F 15
+
+2^4
+2^8
+
+9    F
+1001 1111
+
+B    A    B    E
+1011 1010 1011 1110
+
+1    2    3    4
+0001 0010 0011 0100
+
+0x10 = 16 dec
+
+0001 0000
+
+0x0A = 10
+
+nn nn nn nn 10 nn nn 10 nn nn nn nn nn nn 10
+
+nn nn nn nn
+nn nn
+nn nn nn nn nn nn
+
+byte[]
+
+line[]
+line = [byte]
+
+line = byte [0-200]
+
+line = byte [15, 16, 78, 102]   15-18,20  65,67-75,77-82, 99,102,115
+
+byte:
+0-256
+2 2 2 2  2 2 2 2
+2[8]
+
+64-bit 
+
+
+38 - 0000;<control>;Cc;0;BN;;;;;N;NULL;;;;
+50 - 0001;<control>;Cc;0;BN;;;;;N;START OF HEADING;;;;
+
+
+Nat
+
+zero : Nat
+succ : Nat -> Nat
+
+zero
+succ zero
+succ (succ zero)
+
+
+A zero
+B succ zero
+C succ (succ zero)
+D
+
+
+A
+B
+C
+D
